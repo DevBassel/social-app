@@ -1,5 +1,5 @@
 export enum ProviderType {
   GOOGLE = 'google',
   FACEBOOK = 'facebook',
-  EMAIL = 'email',
+  EMAIL = 'email_and_password',
 }

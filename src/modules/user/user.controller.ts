@@ -30,7 +30,7 @@ export class UserController {
 
   @Get(':userId')
   getUser(@Param('userId', ParseIntPipe) userId: number) {
-    return this.userService.findOne(userId);
+    return this.userService.findOne({ id: userId });
   }
   @Delete()
   removeUser(@Req() req: Request & { user: JwtPayload }) {

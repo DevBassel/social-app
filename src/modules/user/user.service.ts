@@ -1,12 +1,11 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserRes } from './entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { JwtPayload } from '../auth/dto/jwtPayload';
+import { CreateUserWithGoogleDto } from './dto/create-user.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { ProviderType } from './enums/ProviderType.enum';
 
 @Injectable()
 export class UserService {
@@ -14,21 +13,32 @@ export class UserService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
+  async createGoogle(data: CreateUserWithGoogleDto) {
+    return this.userRepo.save(data);
+  }
+
+  createUser(data: RegisterUserDto) {
+    return this.userRepo.save({
+      ...data,
+      name: `${data.first_name} ${data.last_name}`,
+      provider: ProviderType.EMAIL,
+    });
+  }
+
   async getMe(user: JwtPayload) {
     return new UserRes(
       await this.userRepo.findOne({
         where: {
           id: user.id,
         },
-        select: ['id', 'name', 'email', 'picture', 'role', 'createdAt'],
       }),
     );
   }
 
-  async findOne(id: number) {
-    const user = await this.userRepo.findOneBy({ id });
-
-    if (!user) throw new NotFoundException();
+  async findOne({ id, email }: { id?: number; email?: string }) {
+    const user = await this.userRepo.findOne({
+      where: [{ id }, { email }],
+    });
 
     return user;
   }

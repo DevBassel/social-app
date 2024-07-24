@@ -22,7 +22,10 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
+  password: string;
+
+  @Column({ nullable: true })
   picture: string;
 
   @Column({ default: RoleType.User })
