@@ -6,11 +6,13 @@ import { JwtPayload } from '../auth/dto/jwtPayload';
 import { CreateUserWithGoogleDto } from './dto/create-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { ProviderType } from './enums/ProviderType.enum';
+import { MediaService } from '../media/media.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    private readonly mediaService: MediaService,
   ) {}
 
   async createGoogle(data: CreateUserWithGoogleDto) {
@@ -33,6 +35,23 @@ export class UserService {
         },
       }),
     );
+  }
+
+  async updatePic(img: Express.Multer.File, user: JwtPayload) {
+    const uploadedFile = await this.mediaService.create(img);
+    const findUser = await this.findOne({ id: user.id });
+
+    if (findUser.mediaId) {
+      await this.mediaService.delete(findUser.mediaId);
+    }
+
+    await this.userRepo.save({
+      ...findUser,
+      picture: uploadedFile.url,
+      media: uploadedFile,
+    });
+
+    return { msg: 'profile image has been updated' };
   }
 
   async findOne({ id, email }: { id?: number; email?: string }) {

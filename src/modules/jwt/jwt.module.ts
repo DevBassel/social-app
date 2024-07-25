@@ -10,7 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
         secret: config.getOrThrow('JWT_KEY'),
         global: true,
         signOptions: {
-          expiresIn: '7d',
+          expiresIn: '30d',
         },
       }),
       inject: [ConfigService],

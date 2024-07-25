@@ -3,13 +3,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PostLove } from '../../post/entities/postLove.entity';
 import { ProviderType } from '../enums/ProviderType.enum';
 import { RoleType } from 'src/decorators/enums/Roule.enum';
+import { Exclude } from 'class-transformer';
+import { Media } from 'src/modules/media/entities/media.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -23,10 +27,18 @@ export class User {
   email: string;
 
   @Column({ nullable: true })
+  @Exclude()
   password: string;
 
   @Column({ nullable: true })
   picture: string;
+
+  @OneToOne(() => Media, { createForeignKeyConstraints: false, nullable: true })
+  @JoinColumn()
+  media: Media;
+
+  @Column({ nullable: true })
+  mediaId: number;
 
   @Column({ default: RoleType.User })
   role: RoleType;

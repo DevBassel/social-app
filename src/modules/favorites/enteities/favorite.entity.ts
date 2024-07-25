@@ -14,7 +14,10 @@ export class Favorite {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Post, (post) => post.fav, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Post, {
+    onDelete: 'CASCADE',
+    createForeignKeyConstraints: false,
+  })
   post: Post;
 
   @Column()

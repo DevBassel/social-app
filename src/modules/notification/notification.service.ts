@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
 import { Repository } from 'typeorm';
 import { JwtPayload } from '../auth/dto/jwtPayload';
+import { CreateNotificationDto } from './dto/create-notification.dto';
 
 @Injectable()
 export class NotificationService {
@@ -14,23 +15,17 @@ export class NotificationService {
   findAll(user: JwtPayload) {
     return this.notifyRepo.find({
       where: { toId: user.id },
-      relations: { from: true },
     });
   }
 
-  create({
-    content,
-    fromId,
-    toId,
-  }: {
-    content: string;
-    fromId: number;
-    toId: number;
-  }) {
+  create({ content, toId }: CreateNotificationDto) {
     return this.notifyRepo.save({
       content,
-      fromId,
       toId,
     });
+  }
+
+  delete(id: number, user: JwtPayload) {
+    return this.notifyRepo.delete({ id, toId: user.id });
   }
 }

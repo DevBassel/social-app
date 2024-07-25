@@ -16,12 +16,6 @@ export class Notification {
   content: string;
 
   @ManyToOne(() => User, { createForeignKeyConstraints: false })
-  from: User;
-
-  @Column()
-  fromId: number;
-
-  @ManyToOne(() => User, { createForeignKeyConstraints: false })
   to: User;
 
   @Column({ nullable: true })

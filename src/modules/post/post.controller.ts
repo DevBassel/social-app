@@ -10,6 +10,9 @@ import {
   Req,
   ParseIntPipe,
   Query,
+  DefaultValuePipe,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PostService } from './post.service';
@@ -21,6 +24,7 @@ import { JwtPayload } from '../auth/dto/jwtPayload';
 import { JwtGuard } from '../auth/strategys/guards/jwt.guard';
 import { RoleType } from 'src/decorators/enums/Roule.enum';
 import { Role } from 'src/decorators/role.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(JwtGuard)
 @ApiTags('Posts')
@@ -31,26 +35,29 @@ export class PostController {
 
   @Post()
   @UseGuards(RoleGuard)
-  @Role([RoleType.Admin, RoleType.User])
+  @Role(RoleType.Admin, RoleType.User)
+  @UseInterceptors(FileInterceptor('media'))
   create(
     @Body() createPostDto: CreatePostDto,
+    @UploadedFile() file: Express.Multer.File,
     @Req() req: Request & { user: JwtPayload },
   ) {
+    console.log({ createPostDto, file });
     return this.postService.create(createPostDto, req.user);
   }
 
   @Get()
   findAll(
-    @Query('page', ParseIntPipe) page: number,
-    @Req() req: Request & { user: JwtPayload },
+    @Query('page', new DefaultValuePipe(1)) page: number,
+    @Query('limit', new DefaultValuePipe(10)) limit: number,
   ) {
     console.log(page);
-    return this.postService.findAll(page, req.user);
+    return this.postService.findAll(+page, +limit);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req: Request & { user: JwtPayload }) {
-    return this.postService.findOne(+id, req.user);
+  findOne(@Param('id') id: string) {
+    return this.postService.findOne(+id);
   }
 
   @Post('love')

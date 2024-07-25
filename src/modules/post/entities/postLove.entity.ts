@@ -13,7 +13,10 @@ export class PostLove {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.loves, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, {
+    onDelete: 'CASCADE',
+    createForeignKeyConstraints: false,
+  })
   user: User;
 
   @Column()

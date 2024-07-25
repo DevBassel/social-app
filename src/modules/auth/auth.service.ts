@@ -22,11 +22,11 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  createToken(payload: JwtPayload) {
+  createToken(payload: JwtPayload, valid?: string) {
     return {
-      access_token: this.jwt.sign(payload, {
-        expiresIn: '7d',
-      }),
+      access_token: valid
+        ? this.jwt.sign(payload, { expiresIn: valid })
+        : this.jwt.sign(payload),
     };
   }
 
@@ -88,7 +88,7 @@ export class AuthService {
     }
   }
 
-  // -------------- Email and Password -------------------
+  // -------------- Email and Password auth -------------------
   async createUserWithEmailAndPassword(data: RegisterUserDto) {
     const checkUser = await this.userService.findOne({ email: data.email });
 

@@ -1,1 +1,4 @@
-export class CreateNotificationDto {}
+export class CreateNotificationDto {
+  content: string;
+  toId: number;
+}
