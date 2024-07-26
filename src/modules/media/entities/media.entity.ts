@@ -1,9 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Media {
@@ -24,7 +19,4 @@ export class Media {
 
   @Column()
   height: number;
-
-  @CreateDateColumn()
-  creatAt: Date;
 }

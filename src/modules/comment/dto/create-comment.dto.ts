@@ -1,16 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateCommentDto {
   @IsNumber()
-  @ApiProperty()
+  @Type(() => Number)
   postId: number;
 
   @IsString()
-  @ApiProperty()
   content: string;
-
-  @IsString()
-  @IsOptional()
-  media: string;
 }

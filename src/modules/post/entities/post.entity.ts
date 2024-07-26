@@ -4,12 +4,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PostLove } from './postLove.entity';
+import { Media } from 'src/modules/media/entities/media.entity';
 
 @Entity({ name: 'posts' })
 export class Post {
@@ -19,8 +22,16 @@ export class Post {
   @Column()
   content: string;
 
+  @OneToOne(() => Media, {
+    createForeignKeyConstraints: false,
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  media: Media;
+
   @Column({ nullable: true })
-  media: string;
+  mediaId: number;
 
   @ManyToOne(() => User, { createForeignKeyConstraints: false })
   user: User;

@@ -1,10 +1,13 @@
+import { Media } from 'src/modules/media/entities/media.entity';
 import { Post } from '../../post/entities/post.entity';
 import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,8 +20,13 @@ export class Comment {
   @Column()
   content: string;
 
-  @Column({ nullable: true })
-  media: string;
+  @OneToOne(() => Media, {
+    createForeignKeyConstraints: false,
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  media: Media;
 
   @ManyToOne(() => User, { createForeignKeyConstraints: false })
   user: User;

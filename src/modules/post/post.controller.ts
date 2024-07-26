@@ -43,7 +43,7 @@ export class PostController {
     @Req() req: Request & { user: JwtPayload },
   ) {
     console.log({ createPostDto, file });
-    return this.postService.create(createPostDto, req.user);
+    return this.postService.create(createPostDto, file, req.user);
   }
 
   @Get()
@@ -69,12 +69,14 @@ export class PostController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('media'))
   update(
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
+    @UploadedFile() file: Express.Multer.File,
     @Req() req: Request & { user: JwtPayload },
   ) {
-    return this.postService.update(+id, updatePostDto, req.user);
+    return this.postService.update(+id, updatePostDto, file, req.user);
   }
 
   @Delete(':id')

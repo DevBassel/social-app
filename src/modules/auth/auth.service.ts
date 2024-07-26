@@ -13,6 +13,7 @@ import { UserService } from '../user/user.service';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
 import { compare, genSalt, hash } from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private readonly config: ConfigService,
     private readonly jwt: JwtService,
     private readonly userService: UserService,
+    private readonly notifyService: NotificationService,
   ) {}
 
   createToken(payload: JwtPayload, valid?: string) {
@@ -69,6 +71,12 @@ export class AuthService {
           providerId: sub,
         }));
 
+      if (user && !checkUser)
+        this.notifyService.create({
+          content: `wellcom ${user.name}`,
+          toId: user.id,
+        });
+
       const token = this.createToken({
         id: user.id,
         name: user.name,
@@ -96,7 +104,15 @@ export class AuthService {
 
     const hashPassword = await hash(data.password, await genSalt());
 
-    await this.userService.createUser({ ...data, password: hashPassword });
+    const user = await this.userService.createUser({
+      ...data,
+      password: hashPassword,
+    });
+
+    this.notifyService.create({
+      content: `Wellcom ${user.name}`,
+      toId: user.id,
+    });
 
     return { msg: 'user is created ^_^' };
   }

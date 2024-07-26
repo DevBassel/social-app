@@ -20,7 +20,6 @@ export class CloudinaryService {
         return resolve(result);
       });
 
-      console.log({ uploadStream });
       const readStream = new Readable();
 
       readStream.push(file.buffer);

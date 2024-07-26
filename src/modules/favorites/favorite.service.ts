@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Favorite } from './enteities/favorite.entity';
 import { Repository } from 'typeorm';
 import { JwtPayload } from '../auth/dto/jwtPayload';
+import { PostService } from '../post/post.service';
 
 @Injectable()
 export class FavoriteService {
   constructor(
     @InjectRepository(Favorite) private readonly favRepo: Repository<Favorite>,
+    private readonly postService: PostService,
   ) {}
   async addToFav(postId: number, user: JwtPayload) {
+    const checkPost = await this.postService.findOne(postId);
+    if (!checkPost) throw new NotFoundException('post not found');
+
     const check = await this.favRepo.findOneBy({ postId, userId: user.id });
     if (check) {
       // remove from fav
@@ -17,6 +22,7 @@ export class FavoriteService {
         postId,
         userId: user.id,
       });
+
       return { status: false };
     } else {
       // add to fav

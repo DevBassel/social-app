@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PostLove } from './entities/postLove.entity';
 import { JwtPayload } from '../auth/dto/jwtPayload';
 import { pagination } from 'src/utils/pagination';
+import { MediaService } from '../media/media.service';
 
 @Injectable()
 export class PostService {
@@ -14,29 +15,53 @@ export class PostService {
     @InjectRepository(Post) private readonly postRepo: Repository<Post>,
     @InjectRepository(PostLove)
     private readonly postLoveRepo: Repository<PostLove>,
+    private readonly mediaService: MediaService,
   ) {}
 
-  create(createPostDto: CreatePostDto, user: JwtPayload) {
-    const post = this.postRepo.create({ ...createPostDto, userId: user.id });
-    return this.postRepo.save(post);
+  async create(
+    createPostDto: CreatePostDto,
+    file: Express.Multer.File,
+    user: JwtPayload,
+  ) {
+    const media = file ? await this.mediaService.create(file) : null;
+    return this.postRepo.save({ ...createPostDto, userId: user.id, media });
   }
 
   async findAll(page: number, limit: number) {
-    const Q = this.postRepo.createQueryBuilder('post');
+    const Q = this.postRepo
+      .createQueryBuilder('p')
+      .leftJoinAndSelect('p.media', 'm')
+      .select(['p', 'm']);
 
     return pagination(Q, page, limit);
   }
 
   async findOne(id: number) {
-    return this.postRepo.findOneBy({ id });
+    return this.postRepo.findOne({ where: { id }, relations: { media: true } });
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto, user: JwtPayload) {
-    const post = await this.postRepo.findOneBy({ id, userId: user.id });
+  async update(
+    id: number,
+    updatePostDto: UpdatePostDto,
+    file: Express.Multer.File,
+    user: JwtPayload,
+  ) {
+    const post = await this.postRepo.findOne({
+      where: { id, userId: user.id },
+      relations: { media: true },
+    });
 
     if (!post) throw new NotFoundException('post not found');
 
-    return this.postRepo.save({ ...post, ...updatePostDto });
+    if (post.mediaId && file) await this.mediaService.delete(post.mediaId);
+
+    const media = file ? await this.mediaService.create(file) : null;
+
+    return this.postRepo.save({
+      ...post,
+      ...updatePostDto,
+      media: file ? media : post.media,
+    });
   }
 
   async lovePost(id: number, user: JwtPayload) {

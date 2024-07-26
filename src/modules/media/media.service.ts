@@ -11,11 +11,13 @@ export class MediaService {
     @InjectRepository(Media) private readonly mediaRepo: Repository<Media>,
   ) {}
   async create(file: Express.Multer.File) {
-    const { public_id, format, url, width, height } =
+    const { public_id, format, url, width, height, ...other } =
       await this.cloudeService.uploadFile(file, {
         folder: 'social/media',
+        resource_type: 'auto',
         transformation: { width: 600, height: 600, quality: 80, crop: 'crop' },
       });
+    console.log(other);
 
     return this.mediaRepo.save({
       cloudId: public_id,
