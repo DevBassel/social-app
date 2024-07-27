@@ -28,7 +28,10 @@ export class Comment {
   @JoinColumn()
   media: Media;
 
-  @ManyToOne(() => User, { createForeignKeyConstraints: false })
+  @ManyToOne(() => User, {
+    createForeignKeyConstraints: false,
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @Column()

@@ -11,6 +11,8 @@ import { CommentModule } from './modules/comment/comment.module';
 import { MorganMiddleware } from './middlewares/morgan.middleware';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { MeadiModule } from './modules/media/media.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { MsgsModule } from './modules/msgs/msgs.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { MeadiModule } from './modules/media/media.module';
     CommentModule,
     CloudinaryModule,
     MeadiModule,
+    ChatModule,
+    MsgsModule,
   ],
   controllers: [],
   providers: [],
