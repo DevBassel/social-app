@@ -33,14 +33,15 @@ export class MsgsService {
     });
   }
 
-  findAll(id: number) {
+  findAll(id: number, page: number, limit: number) {
     const Q = this.msgRepo
       .createQueryBuilder('msg')
       .leftJoinAndSelect('msg.media', 'm')
       .where('msg.chatId = :id', { id })
+      .orderBy('msg.sentAt', 'DESC') // order by newest
       .select(['msg', 'm']);
 
-    return pagination(Q, 1, 10);
+    return pagination(Q, page, limit);
   }
 
   findOne(id: number) {

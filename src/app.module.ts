@@ -13,6 +13,7 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { MeadiModule } from './modules/media/media.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { MsgsModule } from './modules/msgs/msgs.module';
+import { FriendsModule } from './modules/friends/friends.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MsgsModule } from './modules/msgs/msgs.module';
     MeadiModule,
     ChatModule,
     MsgsModule,
+    FriendsModule,
   ],
   controllers: [],
   providers: [],

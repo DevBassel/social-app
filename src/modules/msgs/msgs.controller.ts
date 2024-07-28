@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   UseInterceptors,
   UploadedFile,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { MsgsService } from './msgs.service';
 import { CreateMsgDto } from './dto/create-msg.dto';
@@ -37,8 +38,12 @@ export class MsgsController {
   }
 
   @Get()
-  findAll(@Query('chatId', ParseIntPipe) chatId: number) {
-    return this.msgsService.findAll(chatId);
+  findAll(
+    @Query('chatId', ParseIntPipe) chatId: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(1), ParseIntPipe) limit: number,
+  ) {
+    return this.msgsService.findAll(chatId, page, limit);
   }
 
   @Get(':id')

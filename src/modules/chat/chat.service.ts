@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
 import { JwtPayload } from '../auth/dto/jwtPayload';
+import { pagination } from 'src/utils/pagination';
 
 @Injectable()
 export class ChatService {
@@ -23,10 +24,13 @@ export class ChatService {
   }
 
   findAll(user: JwtPayload) {
-    return this.chatRepo.findBy([
-      { senderId: user.id },
-      { receiverId: user.id },
-    ]);
+    const Q = this.chatRepo
+      .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.sender', 'sender')
+      .leftJoinAndSelect('chat.recevier', 'recevier')
+      .where('chat.senderId = :id OR chat.recevierId = :id', { id: user.id })
+      .select(['chat', 'sender.name', 'recevier.name']);
+    return pagination(Q, 1, 10);
   }
 
   findOne(id: number) {
