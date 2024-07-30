@@ -8,6 +8,7 @@ import {
   UseGuards,
   ParseEnumPipe,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { CreateFriendDto } from './dto/create-friend.dto';
@@ -42,5 +43,10 @@ export class FriendsController {
     @Body('requestId', ParseIntPipe) requestId: number,
   ) {
     return this.friendsService.acceptOrCanele(type, req.user, requestId);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number, @Req() req: AuthRequest) {
+    return this.friendsService.removeFriend(id, req.user);
   }
 }

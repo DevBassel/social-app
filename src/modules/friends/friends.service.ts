@@ -124,4 +124,16 @@ export class FriendsService {
       return { msg: 'accept request success' };
     }
   }
+
+  removeFriend(id: number, user: JwtPayload) {
+    return this.friendRepo
+      .createQueryBuilder()
+      .delete()
+      .from(Friend)
+      .where('(senderId = :id OR recevierId = :id) AND (id = :fid)', {
+        fid: id,
+        id: user.id,
+      })
+      .execute();
+  }
 }

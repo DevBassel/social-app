@@ -14,6 +14,7 @@ import { MeadiModule } from './modules/media/media.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { MsgsModule } from './modules/msgs/msgs.module';
 import { FriendsModule } from './modules/friends/friends.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { FriendsModule } from './modules/friends/friends.module';
     ChatModule,
     MsgsModule,
     FriendsModule,
+    SocketModule,
   ],
   controllers: [],
   providers: [],
