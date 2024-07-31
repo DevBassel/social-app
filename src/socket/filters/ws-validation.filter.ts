@@ -5,10 +5,9 @@ import {
   BadRequestException,
   ExceptionFilter,
   UnauthorizedException,
-  NotFoundException,
 } from '@nestjs/common';
 
-@Catch(BadRequestException, UnauthorizedException, NotFoundException)
+@Catch(BadRequestException, UnauthorizedException)
 export class WsValidationFilter implements ExceptionFilter {
   catch(exception: BadRequestException, host: ArgumentsHost) {
     const client = host.switchToWs().getClient();
