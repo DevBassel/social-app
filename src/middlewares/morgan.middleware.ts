@@ -23,7 +23,7 @@ export class MorganMiddleware implements NestMiddleware {
         stream: {
           write: (message: string) => {
             this.loggerStream!.write(message);
-            Logger.debug(message); // Log to console
+            // Logger.debug(message); // Log to console
           },
         },
       })(req, res, next);

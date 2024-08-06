@@ -26,7 +26,7 @@ export class CommentService {
     user: JwtPayload,
   ) {
     const post = await this.postService.findOne(createCommentDto.postId);
-    console.log(createCommentDto);
+    // console.log(createCommentDto);
 
     if (!post) throw new NotFoundException('post not found');
 

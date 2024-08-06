@@ -54,7 +54,14 @@ export class UserService {
     return { msg: 'profile image has been updated' };
   }
 
-  async findOne({ id, email }: { id?: number; email?: string }) {
+  async findOne({
+    id,
+    email,
+  }: {
+    id?: number;
+    email?: string;
+    provider?: ProviderType;
+  }) {
     const user = await this.userRepo.findOne({
       where: [{ id }, { email }],
     });
@@ -62,6 +69,9 @@ export class UserService {
     return user;
   }
 
+  findOneWithProvider(email: string, provider: ProviderType) {
+    return this.userRepo.findOneBy({ email, provider });
+  }
   async removeUser({ email, id }: JwtPayload) {
     if (!email) throw new BadRequestException();
     const deleteUser: DeleteResult = await this.userRepo.delete({

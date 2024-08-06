@@ -21,7 +21,10 @@ export class MsgsService {
     file: Express.Multer.File,
     user: JwtPayload,
   ) {
-    const chat = await this.chatService.findOne(createMsgDto.chatId);
+    const chat = await this.chatService.findOne(createMsgDto.chatId, user);
+
+    // console.log({ chat });
+    if (!chat) throw new NotFoundException('chat not found');
 
     const media = file ? await this.mediaService.create(file) : null;
 

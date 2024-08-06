@@ -1,7 +1,7 @@
 import { INestApplication, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import { Server } from 'socket.io';
+import { Server, ServerOptions } from 'socket.io';
 import { JwtPayload } from 'src/modules/auth/dto/jwtPayload';
 import { UserService } from 'src/modules/user/user.service';
 import { AuthSocket } from 'src/utils/authSocket';
@@ -15,19 +15,29 @@ export class WsAdapter extends IoAdapter {
   ) {
     super(app);
   }
-  createIOServer(port: number, options?: any) {
-    const server: Server = super.createIOServer(port, options);
+  createIOServer(port: number, options?: Partial<ServerOptions>) {
+    const server: Server = super.createIOServer(port, {
+      ...options,
+      cors: {
+        origin: '*',
+      },
+    });
 
     server.use(async (socket: AuthSocket, next) => {
       console.log('in io adapter');
-      const token =
-        socket.handshake.headers.authorization &&
-        socket.handshake.headers.authorization.split(' ')[1];
+      const authHeader = socket.handshake.headers.authorization;
 
-      if (!token) return next(new Error('Not Authenticated.'));
+      if (!authHeader) {
+        return next(new Error('Authorization header not found.'));
+      }
+      const token = authHeader.split(' ')[1];
+
+      if (token.length < 100) {
+        return next(new Error('Token not found.'));
+      }
 
       const verify: JwtPayload = this.jwt.verify(token);
-      console.log(verify);
+      // console.log(verify);
 
       const user = await this.userService.findOne({ id: verify.id });
       socket['user'] = verify;
@@ -37,6 +47,7 @@ export class WsAdapter extends IoAdapter {
 
       return next(new Error('Unauthorized.'));
     });
+
     return server;
   }
 }

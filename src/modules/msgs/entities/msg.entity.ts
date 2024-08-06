@@ -23,6 +23,7 @@ export class Msg {
   @ManyToOne(() => User, {
     createForeignKeyConstraints: false,
     onDelete: 'CASCADE',
+    nullable: true,
   })
   sender: User;
 

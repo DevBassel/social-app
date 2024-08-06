@@ -33,7 +33,7 @@ export class MsgsController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: AuthRequest,
   ) {
-    console.log(createMsgDto);
+    // console.log(createMsgDto);
     return this.msgsService.create(createMsgDto, file, req.user);
   }
 
@@ -41,7 +41,7 @@ export class MsgsController {
   findAll(
     @Query('chatId', ParseIntPipe) chatId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(1), ParseIntPipe) limit: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
   ) {
     return this.msgsService.findAll(chatId, page, limit);
   }

@@ -42,7 +42,7 @@ export class PostController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request & { user: JwtPayload },
   ) {
-    console.log({ createPostDto, file });
+    // console.log({ createPostDto, file });
     return this.postService.create(createPostDto, file, req.user);
   }
 
@@ -51,7 +51,7 @@ export class PostController {
     @Query('page', new DefaultValuePipe(1)) page: number,
     @Query('limit', new DefaultValuePipe(10)) limit: number,
   ) {
-    console.log(page);
+    // console.log(page);
     return this.postService.findAll(+page, +limit);
   }
 

@@ -1,9 +1,18 @@
-import { Controller, Post, Get, Query, Res, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Query,
+  Res,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtGuard } from './strategys/guards/jwt.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -30,5 +39,11 @@ export class AuthController {
   @Post('login')
   login(@Body() data: LoginUserDto) {
     return this.authService.loginUserWithEmailAndPassword(data);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('check-auth')
+  checkAuth() {
+    return this.authService.checkAuthStatus();
   }
 }

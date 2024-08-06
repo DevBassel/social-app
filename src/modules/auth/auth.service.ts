@@ -118,7 +118,11 @@ export class AuthService {
   }
 
   async loginUserWithEmailAndPassword(data: LoginUserDto) {
-    const user = await this.userService.findOne({ email: data.email });
+    const user = await this.userService.findOneWithProvider(
+      data.email,
+      ProviderType.EMAIL,
+    );
+    // console.log({ user });
 
     if (!user) throw new UnauthorizedException('email or passwor is wrong O_o');
 
@@ -133,5 +137,9 @@ export class AuthService {
       name: user.name,
       role: user.role,
     });
+  }
+
+  async checkAuthStatus() {
+    return { status: true };
   }
 }

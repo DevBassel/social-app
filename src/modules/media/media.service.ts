@@ -15,9 +15,9 @@ export class MediaService {
       await this.cloudeService.uploadFile(file, {
         folder: 'social/media',
         resource_type: 'auto',
-        transformation: { width: 600, height: 600, quality: 80, crop: 'crop' },
+        transformation: { quality: 80 },
       });
-    console.log(other);
+    // console.log(other);
 
     return this.mediaRepo.save({
       cloudId: public_id,

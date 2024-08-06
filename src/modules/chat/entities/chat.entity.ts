@@ -30,7 +30,7 @@ export class Chat {
   recevier: User;
 
   @Column()
-  receiverId: number;
+  recevierId: number;
 
   @OneToMany(() => Msg, (msg) => msg.chat)
   msgs: Msg[];

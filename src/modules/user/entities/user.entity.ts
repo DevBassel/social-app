@@ -33,6 +33,9 @@ export class User {
   @Column({ nullable: true })
   picture: string;
 
+  @Column({ nullable: true })
+  bio: string;
+
   @OneToOne(() => Media, { createForeignKeyConstraints: false, nullable: true })
   @JoinColumn()
   media: Media;

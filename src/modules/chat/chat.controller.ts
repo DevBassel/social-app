@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,17 +21,21 @@ export class ChatController {
 
   @Post()
   create(@Req() req: AuthRequest, @Body() data: CreateChatDto) {
-    console.log({ us: req.user });
+    // console.log({ us: req.user });
     return this.chatService.create(data, req.user);
   }
 
   @Get()
-  findAll(@Req() req: AuthRequest) {
-    return this.chatService.findAll(req.user);
+  findAll(
+    @Req() req: AuthRequest,
+    @Query('page', new DefaultValuePipe(1)) page: number,
+    @Query('limit', new DefaultValuePipe(10)) limit: number,
+  ) {
+    return this.chatService.findAll(req.user, +page, +limit);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.chatService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req: AuthRequest) {
+    return this.chatService.findOne(+id, req.user);
   }
 }

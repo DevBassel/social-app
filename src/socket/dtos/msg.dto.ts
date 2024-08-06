@@ -1,9 +1,11 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsObject } from 'class-validator';
 
 export class MsgDto {
-  @IsString()
-  msg: string;
+  @IsObject()
+  msg: {
+    content: string;
+  };
 
-  @IsString()
-  roomId: string;
+  @IsNumber()
+  userId: number;
 }
